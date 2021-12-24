@@ -60,20 +60,29 @@ function updateData(canvasId) {
     let context = canvas.getContext('2d');
     context.clearRect(0, 0, postcardW, postcardH);
 
+    function writePostCode(postCode, x, y, letterWidth, fontSize, Pref_CityWidth) {
+        //郵便番号を描画(宛名/差出人共通)
+
+        context.save();
+        context.font = `${fontSize}px ${addrFontFamily}`;
+        context.translate(x, y);
+
+        const postCodeArr = postCode.split("");
+
+        postCodeArr.forEach((postCodeNum, i)=>{
+            const codePref_City = (i >= 3) ? Pref_CityWidth : 0;
+            context.fillText(
+                postCodeNum,
+                codePref_City + letterWidth * i,
+                0
+            );
+        });
+        context.restore();
+    };
+
     // 郵便番号
     const postCode = document.getElementById("inputPostCode").value;
-
-    context.font = `55px ${addrFontFamily}`;
-    const postCodeArr = postCode.slice("");
-    for (i=0; i<postCodeArr.length; i++){
-        let codePref_City = 0;
-        if (i >= 3) codePref_City = 15;
-        context.fillText(
-            postCodeArr[i],
-            455 + codePref_City + 65 * i,
-            176
-        );
-    }
+    writePostCode(postCode, 455, 176, 65, 55, 15)
 
     // 住所
     let addrFontSize;
@@ -301,20 +310,10 @@ function updateData(canvasId) {
         }
     }
 
+    //送信者郵便番号
     const inputFromPostCode = document.getElementById("inputFromPostCode").value;
+    writePostCode(inputFromPostCode, 62, 1280, 40, 40, 13)
 
-    // 送信者 郵便番号
-    context.font = `40px ${addrFontFamily}`;
-    const fromPostCode = inputFromPostCode.slice("");
-    for (i=0; i<fromPostCode.length; i++){
-        let codePref_City = 0;
-        if (i >= 3) codePref_City = 13;
-        context.fillText(
-            fromPostCode[i],
-            62 + codePref_City + 40 * i,
-            1280
-        );
-    }
     // 送信者 住所
     const inputFromAddr = document.getElementById("inputFromAddr").value;
     let fromAddrFontSize;
