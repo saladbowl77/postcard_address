@@ -1,0 +1,56 @@
+html,body{margin: 0; width: 100%; height: 100%;}
+header {
+    position: fixed;
+    width: 200px;
+    height: 100%;
+    background-color: #fefefe;
+    border-radius: 0px 20px 20px 0px;
+    box-shadow: 0 2px 5px 2px rgba(60,64,67,0.15);
+    font-family: 'Noto Sans JP', sans-serif;
+}
+header h1 span{display: block; margin: 0 10px; font-size: 1.2rem; font-weight: 600; color: #5c5c5c;}
+div#headerSideMenu a,
+div#headerSideMenuSp a {
+    font-family: 'Noto Sans JP', sans-serif;
+    color: #5c5c5c;
+    font-weight: 500;
+    width: calc(100% - 10px - 20px - 5px);
+    display: block;
+    text-decoration: none;
+    margin: 10px 5px;
+    padding: 10px 10px;
+    border-radius: 5px;
+    background-color: #fefefe;
+    box-shadow: 0 0 6px 2px rgba(60,64,67,.1);
+}
+input[type="checkbox"],
+div#headerSideMenuSp {display: none;}
+main {width: calc(100% - 230px); min-height: calc(100% - 10px); padding: 10px 10px 10px 210px; background-color: #f5f7fb;}
+
+@media screen and (max-width: 740px) {
+    header {
+        width: 100%; height: 50px;
+        border-radius: 0 0 10px 10px;
+        z-index: 910;
+    }
+    header h1 {margin: 0 0 0 40px; padding: calc((50px - 1.2rem) / 4); display: inline-block;}
+    header h1 span {display: inline-block; margin: 0; padding: 0;}
+    header div#headerSideMenu {display: none;}
+    div#headerSideMenuSp {position: fixed; top: 50px; background-color: #fefefe; width: 0%; height: 0%; margin: 0; padding: 0; overflow: hidden; transition: ease-in .3s;}
+    input#headerMenuOpen:checked ~ div#headerSideMenuSp {
+        position: fixed;
+        display: block;
+        width: 100%; height: calc(100% - 50px);
+        transition: ease-in .3s;
+        z-index: 900;
+    }
+    header label {display: inline-block; position: absolute; top: 9px; left: 5px;}
+    header label span {
+        display: block;
+        width: 30px; height: 3px;
+        background-color: #5c5c5c;
+        margin: 6px 3px;
+        border-radius: 3px;
+    }
+    main {width: calc(100% - 20px); min-height: calc(100% - 60px); padding: 50px 10px 10px 10px;}
+}
