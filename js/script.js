@@ -312,7 +312,7 @@ function updateData(canvasId) {
 
     //送信者郵便番号
     const inputFromPostCode = document.getElementById("inputFromPostCode").value;
-    writePostCode(sernderPostCode, 62, 1280, 40, 40, 13)
+    writePostCode(inputFromPostCode, 62, 1280, 40, 40, 13)
 
     // 送信者 住所
     const inputFromAddr = document.getElementById("inputFromAddr").value;
