@@ -1,22 +1,29 @@
-window.onload = function() {
-    const ua = navigator.userAgent
-    const isSPPad = ua.indexOf("iPhone") >= 0
-    || ua.indexOf("iPad") >= 0
-    || navigator.userAgent.indexOf("iPod") >= 0
-    || navigator.userAgent.indexOf("Android") >= 0
-    console.log(isSPPad)
-    if (isSPPad) document.getElementById("spButton").innerHTML =  `<button onclick="updateData('atenaOutput')">生成</button>`
-    document.getElementById("inputFromPostCode").value
-    if(localStorage.getItem('fromPostCode')) document.getElementById("inputFromPostCode").value = localStorage.getItem('fromPostCode');
-    if(localStorage.getItem('fromAddr'))     document.getElementById("inputFromAddr").value = localStorage.getItem('fromAddr');
-    if(localStorage.getItem('fromLastName')) document.getElementById("inputFromLastName").value = localStorage.getItem('fromLastName');
-    const LS_fromFirstNames = localStorage.getItem('fromFirstNames').split(",");
-    if(LS_fromFirstNames){
-        for (i=0; i<LS_fromFirstNames.length; i++){
+window.onload = function () {
+    const ua = navigator.userAgent;
+    const isSPPad =
+        ua.indexOf("iPhone") >= 0 ||
+        ua.indexOf("iPad") >= 0 ||
+        navigator.userAgent.indexOf("iPod") >= 0 ||
+        navigator.userAgent.indexOf("Android") >= 0;
+    console.log(isSPPad);
+    if (isSPPad)
+        document.getElementById(
+            "spButton"
+        ).innerHTML = `<button onclick="updateData('atenaOutput')">生成</button>`;
+    document.getElementById("inputFromPostCode").value;
+    if (localStorage.getItem("fromPostCode"))
+        document.getElementById("inputFromPostCode").value = localStorage.getItem("fromPostCode");
+    if (localStorage.getItem("fromAddr"))
+        document.getElementById("inputFromAddr").value = localStorage.getItem("fromAddr");
+    if (localStorage.getItem("fromLastName"))
+        document.getElementById("inputFromLastName").value = localStorage.getItem("fromLastName");
+    const LS_fromFirstNames = localStorage.getItem("fromFirstNames").split(",");
+    if (LS_fromFirstNames) {
+        for (i = 0; i < LS_fromFirstNames.length; i++) {
             document.getElementsByClassName("inputFromFirstNames")[i].value = LS_fromFirstNames[i];
         }
     }
-}
+};
 // 環境変数的な
 const postcardH = 1480;
 const postcardW = 1000;
@@ -35,14 +42,18 @@ function getHeight(target_letters, font_family, font_size) {
     canvas_ctx.font = `${font_size}px ${font_family}`;
     const metrics = canvas_ctx.measureText(target_letters);
     if (
-        target_letters.indexOf('一') != -1 ||
-        target_letters.indexOf('-') != -1 ||
-        target_letters.indexOf('–') != -1 ||
-        target_letters.indexOf('−') != -1)
-    {
-        return (metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent + font_size / 10 * 7);
+        target_letters.indexOf("一") != -1 ||
+        target_letters.indexOf("-") != -1 ||
+        target_letters.indexOf("–") != -1 ||
+        target_letters.indexOf("−") != -1
+    ) {
+        return (
+            metrics.actualBoundingBoxAscent +
+            metrics.actualBoundingBoxDescent +
+            (font_size / 10) * 7
+        );
     } else {
-        return (metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent);
+        return metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
     }
 }
 
@@ -57,7 +68,7 @@ function updateData(canvasId) {
     //console.log(canvas)
     //background.src = "./backImage_sita.jpg";
     //background.src = "./backImage.jpg";
-    let context = canvas.getContext('2d');
+    let context = canvas.getContext("2d");
     context.clearRect(0, 0, postcardW, postcardH);
 
     function writePostCode(postCode, x, y, letterWidth, fontSize, Pref_CityWidth) {
@@ -69,41 +80,39 @@ function updateData(canvasId) {
 
         const postCodeArr = postCode.split("");
 
-        postCodeArr.forEach((postCodeNum, i)=>{
-            const codePref_City = (i >= 3) ? Pref_CityWidth : 0;
-            context.fillText(
-                postCodeNum,
-                codePref_City + letterWidth * i,
-                0
-            );
+        postCodeArr.forEach((postCodeNum, i) => {
+            const codePref_City = i >= 3 ? Pref_CityWidth : 0;
+            context.fillText(postCodeNum, codePref_City + letterWidth * i, 0);
         });
         context.restore();
-    };
+    }
 
     // 郵便番号
     const postCode = document.getElementById("inputPostCode").value;
-    writePostCode(postCode, 455, 176, 65, 55, 15)
+    writePostCode(postCode, 455, 176, 65, 55, 15);
 
     // 住所
     let addrFontSize;
     const addrTextH = 800;
-    const addrFontSizeList = [53,50,47,44,41,39,36,33,30,27,24,21,19,16,13,10,7,4,1];
+    const addrFontSizeList = [
+        53, 50, 47, 44, 41, 39, 36, 33, 30, 27, 24, 21, 19, 16, 13, 10, 7, 4, 1,
+    ];
     const addr = document.getElementById("inputAddr").value;
     let newLine = [0];
     let addrH = 0;
-    for (h=0; h<addrFontSizeList.length; h++){
-        for (i=0; i<addr.length; i++){
+    for (h = 0; h < addrFontSizeList.length; h++) {
+        for (i = 0; i < addr.length; i++) {
             const textH = getHeight(addr[i], addrFontFamily, addrFontSizeList[h]);
             //console.log(textH);
             addrH += textH;
             //console.log(addrH)
-            if (addrH > addrTextH){
+            if (addrH > addrTextH) {
                 newLine.push([i - 1]);
                 //console.log(newLine);
                 addrH = textH;
             }
         }
-        if (newLine.length < 3){
+        if (newLine.length < 3) {
             addrFontSize = addrFontSizeList[h];
             break;
         } else {
@@ -113,15 +122,10 @@ function updateData(canvasId) {
     }
     //console.log(addrFontSize)
     //console.log(newLine)
-    const addrArray = addr.split('');
+    const addrArray = addr.split("");
     let addrArrayDaraw = [];
-    for (i=0; i<newLine.length; i++){
-        addrArrayDaraw.push(
-            addrArray.slice(
-                newLine[i],
-                newLine[i + 1]
-            )
-        );
+    for (i = 0; i < newLine.length; i++) {
+        addrArrayDaraw.push(addrArray.slice(newLine[i], newLine[i + 1]));
     }
     //console.log(addrArrayDaraw);
 
@@ -133,34 +137,42 @@ function updateData(canvasId) {
 
     context.font = `${addrFontSize}px ${addrFontFamily}`;
 
-    for(let i=0; i<addrArrayDaraw.length; i++){
+    for (let i = 0; i < addrArrayDaraw.length; i++) {
         //console.log(addrArrayDaraw[i])
-        for(let j=0; j<addrArrayDaraw[i].length; j++){
+        for (let j = 0; j < addrArrayDaraw[i].length; j++) {
             context.save();
             const outputTxt = addrArrayDaraw[i][j];
             const outputTxtW = getWidth(addrArrayDaraw[i][j], addrFontFamily, addrFontSize);
             const outputTxtH = getHeight(addrArrayDaraw[i][j], addrFontFamily, addrFontSize);
 
             if (
-                addrArrayDaraw[i][j] == '-' ||
-                addrArrayDaraw[i][j] == '–' ||
-                addrArrayDaraw[i][j] == '−' 
-            ){
+                addrArrayDaraw[i][j] == "-" ||
+                addrArrayDaraw[i][j] == "–" ||
+                addrArrayDaraw[i][j] == "−"
+            ) {
                 context.rotate(Math.PI / 2);
                 context.fillText(
                     outputTxt,
                     addrH - 5,
-                    -postcardW + (addrStandardW - 10) + ((addrStandardW + 10) * addrWL) - ((addrStandardW - outputTxtW) / 2) + 45
+                    -postcardW +
+                        (addrStandardW - 10) +
+                        (addrStandardW + 10) * addrWL -
+                        (addrStandardW - outputTxtW) / 2 +
+                        45
                 );
                 context.restore();
             } else {
                 context.fillText(
                     outputTxt,
-                    postcardW - (addrStandardW + 10) - ((addrStandardW + 10) * addrWL) + ((addrStandardW - outputTxtW) / 2) - 20,
+                    postcardW -
+                        (addrStandardW + 10) -
+                        (addrStandardW + 10) * addrWL +
+                        (addrStandardW - outputTxtW) / 2 -
+                        20,
                     addrH + 20
                 );
             }
-            
+
             addrH += outputTxtH + 10;
         }
         addrH = 280;
@@ -176,31 +188,32 @@ function updateData(canvasId) {
     let firstNameCount = 0;
     let maxFirstNameArray;
 
-    for (i=0; i<firstNames.length; i++){
+    for (i = 0; i < firstNames.length; i++) {
         if (firstNames[i].value) firstNameCount++;
 
-        if (firstNames[i].value.length > maxFirstNameNum){
+        if (firstNames[i].value.length > maxFirstNameNum) {
             maxFirstName = firstNames[i].value;
             maxFirstNameNum = firstNames[i].value.length;
         }
     }
     const allNameText = lastName + maxFirstName + honorificTitle;
 
-
     let nameTextW = 0;
     let nameTextH = 0;
 
     // 宛名のフォントサイズの決定
-    const fontSizeArray = [85,80,75,70,65,60,55,50,45,40,35,30,25,20,15,10,5,4,3,2,1]
+    const fontSizeArray = [
+        85, 80, 75, 70, 65, 60, 55, 50, 45, 40, 35, 30, 25, 20, 15, 10, 5, 4, 3, 2, 1,
+    ];
     const nameMaxWSize = 700;
     const nameMaxHSize = 700;
     let nameFontSize;
-    for (i=0; i<fontSizeArray.length; i++){
+    for (i = 0; i < fontSizeArray.length; i++) {
         nameTextW = 0;
         nameTextH = 0;
         nameFontSize = fontSizeArray[i];
         //console.log(nameFontSize);
-        for(j=0;j<allNameText.length; j++){
+        for (j = 0; j < allNameText.length; j++) {
             nameTextW += getWidth(allNameText[j], addrFontFamily, nameFontSize) + 20;
             nameTextH += getHeight(allNameText[j], addrFontFamily, nameFontSize) + 10;
             //console.log(getHeight(allNameText[j], addrFontFamily, nameFontSize))
@@ -210,35 +223,63 @@ function updateData(canvasId) {
 
     let maxFirstNameH = 0;
     let nameTextBaseLine = [];
-    if(maxFirstName) {
+    if (maxFirstName) {
         maxFirstNameArray = maxFirstName.split("");
-        for (i=0;i<maxFirstNameArray.length;i++){
+        for (i = 0; i < maxFirstNameArray.length; i++) {
             maxFirstNameH += getHeight(maxFirstNameArray[i], addrFontFamily, nameFontSize) + 20;
         }
         //console.log(firstNameCount)
         if (firstNameCount == 1) {
-            nameTextBaseLine.push(postcardW / 2 + 50 - getWidth(maxFirstNameArray[0], addrFontFamily, nameFontSize) / 2);
-        } else if (firstNameCount == 2){
-            const paperCenterLineName =  getWidth(maxFirstNameArray[0], addrFontFamily, nameFontSize);
+            nameTextBaseLine.push(
+                postcardW / 2 +
+                    50 -
+                    getWidth(maxFirstNameArray[0], addrFontFamily, nameFontSize) / 2
+            );
+        } else if (firstNameCount == 2) {
+            const paperCenterLineName = getWidth(
+                maxFirstNameArray[0],
+                addrFontFamily,
+                nameFontSize
+            );
             nameTextBaseLine.push(postcardW / 2 + 50 + paperCenterLineName / 2 + 10);
             nameTextBaseLine.push(postcardW / 2 + 50 - paperCenterLineName / 2 - 10);
-        } else if (firstNameCount == 3){
-            const paperCenterLineName =  getWidth(maxFirstNameArray[0], addrFontFamily, nameFontSize);
-            nameTextBaseLine.push(postcardW / 2 + 50 - paperCenterLineName / 2 + paperCenterLineName + 20);
+        } else if (firstNameCount == 3) {
+            const paperCenterLineName = getWidth(
+                maxFirstNameArray[0],
+                addrFontFamily,
+                nameFontSize
+            );
+            nameTextBaseLine.push(
+                postcardW / 2 + 50 - paperCenterLineName / 2 + paperCenterLineName + 20
+            );
             nameTextBaseLine.push(postcardW / 2 + 50 - paperCenterLineName / 2);
-            nameTextBaseLine.push(postcardW / 2 + 50 - paperCenterLineName / 2 - paperCenterLineName - 20);
-        } else if (firstNameCount == 4){
-            const paperCenterLineName =  getWidth(maxFirstNameArray[0], addrFontFamily, nameFontSize);
-            nameTextBaseLine.push(postcardW / 2 + 50 + paperCenterLineName / 2 + 25 + paperCenterLineName);
+            nameTextBaseLine.push(
+                postcardW / 2 + 50 - paperCenterLineName / 2 - paperCenterLineName - 20
+            );
+        } else if (firstNameCount == 4) {
+            const paperCenterLineName = getWidth(
+                maxFirstNameArray[0],
+                addrFontFamily,
+                nameFontSize
+            );
+            nameTextBaseLine.push(
+                postcardW / 2 + 50 + paperCenterLineName / 2 + 25 + paperCenterLineName
+            );
             nameTextBaseLine.push(postcardW / 2 + 50 + paperCenterLineName / 2 + 10);
             nameTextBaseLine.push(postcardW / 2 + 50 - paperCenterLineName / 2 - 10);
-            nameTextBaseLine.push(postcardW / 2 + 50 - paperCenterLineName / 2 - 25 - paperCenterLineName);
+            nameTextBaseLine.push(
+                postcardW / 2 + 50 - paperCenterLineName / 2 - 25 - paperCenterLineName
+            );
         }
     } else {
-        if (lastName){
-            nameTextBaseLine.push(postcardW / 2 - getWidth(lastName[0], addrFontFamily, nameFontSize) / 2);
-        } else if(honorificTitle) {
-            nameTextBaseLine.push(postcardW / 2 - getWidth(honorificTitle[0], addrFontFamily, nameFontSize) / 2);
+        if (lastName) {
+            nameTextBaseLine.push(
+                postcardW / 2 - getWidth(lastName[0], addrFontFamily, nameFontSize) / 2
+            );
+        } else if (honorificTitle) {
+            nameTextBaseLine.push(
+                postcardW / 2 - getWidth(honorificTitle[0], addrFontFamily, nameFontSize) / 2
+            );
         }
     }
 
@@ -246,60 +287,65 @@ function updateData(canvasId) {
 
     const lastNameArray = lastName.split("");
     let lastNameH = 0;
-    for (i=0; i<lastNameArray.length; i++){
+    for (i = 0; i < lastNameArray.length; i++) {
         context.font = `${nameFontSize}px ${addrFontFamily}`;
-        context.fillText(
-            lastNameArray[i],
-            nameTextBaseLine[0],
-            350 + lastNameH
-        );
+        context.fillText(lastNameArray[i], nameTextBaseLine[0], 350 + lastNameH);
         lastNameH += getHeight(lastNameArray[i], addrFontFamily, nameFontSize) + 20;
     }
-    
+
     let nameSpace = (nameTextH - maxFirstNameH) / 2;
 
-    for (i=0; i<firstNameCount; i++){
+    for (i = 0; i < firstNameCount; i++) {
         const firstNameArray = firstNames[i].value.split("");
         firstNameH = 0;
         firstNameHArr = [];
         let nameBetweenSpace = 0;
         let nameTextY = 0;
-        for (j=0; j<firstNameArray.length; j++){
+        for (j = 0; j < firstNameArray.length; j++) {
             const thisTextH = getHeight(firstNameArray[j], addrFontFamily, nameFontSize);
-            firstNameH += thisTextH
-            firstNameHArr.push(thisTextH)
+            firstNameH += thisTextH;
+            firstNameHArr.push(thisTextH);
         }
-        if (firstNameHArr.length > 1){
+        if (firstNameHArr.length > 1) {
             nameBetweenSpace = (maxFirstNameH - firstNameH) / (firstNameHArr.length - 1);
         }
         //console.log(nameBetweenSpace)
         firstNameH = 0;
-        for (j=0; j<firstNameArray.length; j++){
+        for (j = 0; j < firstNameArray.length; j++) {
             nameTextY = 0;
-            if(firstNameHArr.length == 1){
-                nameTextY = 350 + lastNameH + nameSpace - 5 + (maxFirstNameH / 2) - (getHeight(firstNameArray[j], addrFontFamily, nameFontSize) / 2);
-            } else if (firstNameHArr.length == 2 && j == 1){
-                nameTextY = 350 + lastNameH + nameSpace - 5 + maxFirstNameH - getHeight(firstNameArray[j], addrFontFamily, nameFontSize);
+            if (firstNameHArr.length == 1) {
+                nameTextY =
+                    350 +
+                    lastNameH +
+                    nameSpace -
+                    5 +
+                    maxFirstNameH / 2 -
+                    getHeight(firstNameArray[j], addrFontFamily, nameFontSize) / 2;
+            } else if (firstNameHArr.length == 2 && j == 1) {
+                nameTextY =
+                    350 +
+                    lastNameH +
+                    nameSpace -
+                    5 +
+                    maxFirstNameH -
+                    getHeight(firstNameArray[j], addrFontFamily, nameFontSize);
             } else {
-                nameTextY = 350 + lastNameH + firstNameH + nameSpace - 5 
+                nameTextY = 350 + lastNameH + firstNameH + nameSpace - 5;
             }
 
             context.font = `${nameFontSize}px ${addrFontFamily}`;
-            context.fillText(
-                firstNameArray[j],
-                nameTextBaseLine[i],
-                nameTextY
-            );
-            
-            firstNameH += getHeight(firstNameArray[j], addrFontFamily, nameFontSize) + nameBetweenSpace;
+            context.fillText(firstNameArray[j], nameTextBaseLine[i], nameTextY);
+
+            firstNameH +=
+                getHeight(firstNameArray[j], addrFontFamily, nameFontSize) + nameBetweenSpace;
         }
     }
 
     const honorificTitleArray = honorificTitle.split("");
     let honorificTitleH = 0;
-    for (i=0; i<firstNameCount; i++){
+    for (i = 0; i < firstNameCount; i++) {
         honorificTitleH = 0;
-        for (j=0; j<honorificTitleArray.length; j++){
+        for (j = 0; j < honorificTitleArray.length; j++) {
             context.font = `${nameFontSize}px ${addrFontFamily}`;
             context.fillText(
                 honorificTitleArray[j],
@@ -312,7 +358,7 @@ function updateData(canvasId) {
 
     //送信者郵便番号
     const inputFromPostCode = document.getElementById("inputFromPostCode").value;
-    writePostCode(inputFromPostCode, 62, 1280, 40, 40, 13)
+    writePostCode(inputFromPostCode, 62, 1280, 40, 40, 13);
 
     // 送信者 住所
     const inputFromAddr = document.getElementById("inputFromAddr").value;
@@ -320,21 +366,21 @@ function updateData(canvasId) {
     let fromAddrH = 0;
     const fromAddrTextH = 500;
     let fromAddrNewLine = [0];
-    const fromAddrFontSizeList = [33,30,27,24,21,19,16,13,10,7,4,1];
-    for (h=0; h<fromAddrFontSizeList.length; h++){
-        for (i=0; i<inputFromAddr.length; i++){
+    const fromAddrFontSizeList = [33, 30, 27, 24, 21, 19, 16, 13, 10, 7, 4, 1];
+    for (h = 0; h < fromAddrFontSizeList.length; h++) {
+        for (i = 0; i < inputFromAddr.length; i++) {
             const textH = getHeight(inputFromAddr[i], addrFontFamily, fromAddrFontSizeList[h]);
             //console.log(textH);
             fromAddrH += textH;
             //console.log(fromAddrH)
-            if (fromAddrH > fromAddrTextH){
+            if (fromAddrH > fromAddrTextH) {
                 fromAddrNewLine.push([i - 1]);
                 //console.log(fromAddrNewLine);
                 fromAddrH = textH;
             }
             //console.log(fromAddrNewLine);
         }
-        if (fromAddrNewLine.length < 3){
+        if (fromAddrNewLine.length < 3) {
             fromAddrFontSize = fromAddrFontSizeList[h];
             break;
         } else {
@@ -344,15 +390,10 @@ function updateData(canvasId) {
     }
 
     //console.log(fromAddrFontSize)
-    const fromAddrArray = inputFromAddr.split('');
+    const fromAddrArray = inputFromAddr.split("");
     let fromAddrArrayDaraw = [];
-    for (i=0; i<fromAddrNewLine.length; i++){
-        fromAddrArrayDaraw.push(
-            fromAddrArray.slice(
-                fromAddrNewLine[i],
-                fromAddrNewLine[i + 1]
-            )
-        );
+    for (i = 0; i < fromAddrNewLine.length; i++) {
+        fromAddrArrayDaraw.push(fromAddrArray.slice(fromAddrNewLine[i], fromAddrNewLine[i + 1]));
     }
     //console.log(fromAddrArrayDaraw);
 
@@ -364,34 +405,45 @@ function updateData(canvasId) {
 
     context.font = `${fromAddrFontSize}px ${addrFontFamily}`;
 
-    for(let i=0; i<fromAddrArrayDaraw.length; i++){
+    for (let i = 0; i < fromAddrArrayDaraw.length; i++) {
         //console.log(fromAddrArrayDaraw[i])
-        for(let j=0; j<fromAddrArrayDaraw[i].length; j++){
+        for (let j = 0; j < fromAddrArrayDaraw[i].length; j++) {
             context.save();
             const outputTxt = fromAddrArrayDaraw[i][j];
             const outputTxtW = getWidth(fromAddrArrayDaraw[i][j], addrFontFamily, fromAddrFontSize);
-            const outputTxtH = getHeight(fromAddrArrayDaraw[i][j], addrFontFamily, fromAddrFontSize);
+            const outputTxtH = getHeight(
+                fromAddrArrayDaraw[i][j],
+                addrFontFamily,
+                fromAddrFontSize
+            );
 
             if (
-                fromAddrArrayDaraw[i][j] == '-' ||
-                fromAddrArrayDaraw[i][j] == '–' ||
-                fromAddrArrayDaraw[i][j] == '−' 
-            ){
+                fromAddrArrayDaraw[i][j] == "-" ||
+                fromAddrArrayDaraw[i][j] == "–" ||
+                fromAddrArrayDaraw[i][j] == "−"
+            ) {
                 context.rotate(Math.PI / 2);
                 context.fillText(
                     outputTxt,
                     fromAddrH - 20,
-                    -370 + (fromAddrStandardW - 10) + ((fromAddrStandardW + 10) * fromAddrWL) - ((fromAddrStandardW - outputTxtW) / 2) + 23
+                    -370 +
+                        (fromAddrStandardW - 10) +
+                        (fromAddrStandardW + 10) * fromAddrWL -
+                        (fromAddrStandardW - outputTxtW) / 2 +
+                        23
                 );
                 context.restore();
             } else {
                 context.fillText(
                     outputTxt,
-                    370 - (fromAddrStandardW + 10) - ((fromAddrStandardW + 10) * fromAddrWL) + ((fromAddrStandardW - outputTxtW) / 2),
+                    370 -
+                        (fromAddrStandardW + 10) -
+                        (fromAddrStandardW + 10) * fromAddrWL +
+                        (fromAddrStandardW - outputTxtW) / 2,
                     fromAddrH
                 );
             }
-            
+
             fromAddrH += outputTxtH + 4;
         }
         fromAddrH = 650;
@@ -405,33 +457,32 @@ function updateData(canvasId) {
     let fromMaxFirstNameNum = 0;
     let fromFirstNameCount = 0;
     let fromMaxFirstNameArray;
-    let  fromFirstNamesValueArray = [];
-    for (i=0; i<inputFromFirstNames.length; i++){
+    let fromFirstNamesValueArray = [];
+    for (i = 0; i < inputFromFirstNames.length; i++) {
         fromFirstNamesValueArray.push(inputFromFirstNames[i].value);
         if (inputFromFirstNames[i].value) fromFirstNameCount++;
 
-        if (inputFromFirstNames[i].value.length > fromMaxFirstNameNum){
+        if (inputFromFirstNames[i].value.length > fromMaxFirstNameNum) {
             fromMaxFirstName = inputFromFirstNames[i].value;
             fromMaxFirstNameNum = inputFromFirstNames[i].value.length;
         }
     }
     const fromAllNameText = inputFromLastName + fromMaxFirstName;
 
-
     let fromNameTextW = 0;
     let fromNameTextH = 0;
 
     // 送り主のフォントサイズの決定
-    const fromFontSizeArray = [40,35,30,25,20,15,10,5,4,3,2,1]
+    const fromFontSizeArray = [40, 35, 30, 25, 20, 15, 10, 5, 4, 3, 2, 1];
     const fromNameMaxWSize = 200;
     const fromNameMaxHSize = 870;
     let fromNameFontSize;
-    for (i=0; i<fromFontSizeArray.length; i++){
+    for (i = 0; i < fromFontSizeArray.length; i++) {
         fromNameTextW = 0;
         fromNameTextH = 0;
         fromNameFontSize = fromFontSizeArray[i];
         //console.log(fromNameFontSize);
-        for(j=0;j<fromAllNameText.length; j++){
+        for (j = 0; j < fromAllNameText.length; j++) {
             fromNameTextW += getWidth(fromAllNameText[j], addrFontFamily, fromNameFontSize) + 2;
             fromNameTextH += getHeight(fromAllNameText[j], addrFontFamily, fromNameFontSize) + 2;
         }
@@ -440,98 +491,123 @@ function updateData(canvasId) {
 
     let fromMaxFirstNameH = 0;
     let fromNameTextBaseLine = [];
-    if(fromMaxFirstName) {
+    if (fromMaxFirstName) {
         fromMaxFirstNameArray = fromMaxFirstName.split("");
-        for (i=0;i<fromMaxFirstNameArray.length;i++){
-            fromMaxFirstNameH += getHeight(fromMaxFirstNameArray[i], addrFontFamily, fromNameFontSize) + 20;
+        for (i = 0; i < fromMaxFirstNameArray.length; i++) {
+            fromMaxFirstNameH +=
+                getHeight(fromMaxFirstNameArray[i], addrFontFamily, fromNameFontSize) + 20;
         }
         //console.log(fromFirstNameCount)
         if (fromFirstNameCount == 1) {
-            fromNameTextBaseLine.push(120 - getWidth(fromMaxFirstNameArray[0], addrFontFamily, fromNameFontSize) / 2);
-        } else if (fromFirstNameCount == 2){
-            const paperCenterLineName =  getWidth(fromMaxFirstNameArray[0], addrFontFamily, fromNameFontSize);
+            fromNameTextBaseLine.push(
+                120 - getWidth(fromMaxFirstNameArray[0], addrFontFamily, fromNameFontSize) / 2
+            );
+        } else if (fromFirstNameCount == 2) {
+            const paperCenterLineName = getWidth(
+                fromMaxFirstNameArray[0],
+                addrFontFamily,
+                fromNameFontSize
+            );
             fromNameTextBaseLine.push(120 + paperCenterLineName / 2 + 10);
             fromNameTextBaseLine.push(120 - paperCenterLineName / 2 - 10);
-        } else if (fromFirstNameCount == 3){
-            const paperCenterLineName =  getWidth(fromMaxFirstNameArray[0], addrFontFamily, fromNameFontSize);
+        } else if (fromFirstNameCount == 3) {
+            const paperCenterLineName = getWidth(
+                fromMaxFirstNameArray[0],
+                addrFontFamily,
+                fromNameFontSize
+            );
             fromNameTextBaseLine.push(120 - paperCenterLineName / 2 + paperCenterLineName + 20);
             fromNameTextBaseLine.push(120 - paperCenterLineName / 2);
             fromNameTextBaseLine.push(120 - paperCenterLineName / 2 - paperCenterLineName - 20);
-        } else if (fromFirstNameCount == 4){
-            const paperCenterLineName =  getWidth(fromMaxFirstNameArray[0], addrFontFamily, fromNameFontSize);
+        } else if (fromFirstNameCount == 4) {
+            const paperCenterLineName = getWidth(
+                fromMaxFirstNameArray[0],
+                addrFontFamily,
+                fromNameFontSize
+            );
             fromNameTextBaseLine.push(120 + paperCenterLineName / 2 + 25 + paperCenterLineName);
             fromNameTextBaseLine.push(120 + paperCenterLineName / 2 + 10);
             fromNameTextBaseLine.push(120 - paperCenterLineName / 2 - 10);
             fromNameTextBaseLine.push(120 - paperCenterLineName / 2 - 25 - paperCenterLineName);
         }
     } else {
-        if (inputFromLastName){
-            fromNameTextBaseLine.push(150 - getWidth(inputFromLastName[0], addrFontFamily, fromNameFontSize) / 2);
-        } else if(honorificTitle) {
-            fromNameTextBaseLine.push(150 - getWidth(honorificTitle[0], addrFontFamily, fromNameFontSize) / 2);
+        if (inputFromLastName) {
+            fromNameTextBaseLine.push(
+                150 - getWidth(inputFromLastName[0], addrFontFamily, fromNameFontSize) / 2
+            );
+        } else if (honorificTitle) {
+            fromNameTextBaseLine.push(
+                150 - getWidth(honorificTitle[0], addrFontFamily, fromNameFontSize) / 2
+            );
         }
     }
 
     //console.log(fromNameTextBaseLine);
 
     const fromLastNameArray = inputFromLastName.split("");
-    const fromNameY =700;
+    const fromNameY = 700;
     let fromLastNameH = 0;
-    for (i=0; i<fromLastNameArray.length; i++){
+    for (i = 0; i < fromLastNameArray.length; i++) {
         context.font = `${fromNameFontSize}px ${addrFontFamily}`;
-        context.fillText(
-            fromLastNameArray[i],
-            fromNameTextBaseLine[0],
-            fromNameY + fromLastNameH
-        );
+        context.fillText(fromLastNameArray[i], fromNameTextBaseLine[0], fromNameY + fromLastNameH);
         fromLastNameH += getHeight(fromLastNameArray[i], addrFontFamily, fromNameFontSize) + 20;
     }
-    
+
     let fromNameSpace = 10;
 
-    for (i=0; i<fromFirstNameCount; i++){
+    for (i = 0; i < fromFirstNameCount; i++) {
         const firstNameArray = inputFromFirstNames[i].value.split("");
         firstNameH = 0;
         firstNameHArr = [];
         let nameBetweenSpace = 0;
         let fromNameTextY = 0;
-        for (j=0; j<firstNameArray.length; j++){
+        for (j = 0; j < firstNameArray.length; j++) {
             const thisTextH = getHeight(firstNameArray[j], addrFontFamily, fromNameFontSize);
-            firstNameH += thisTextH
-            firstNameHArr.push(thisTextH)
+            firstNameH += thisTextH;
+            firstNameHArr.push(thisTextH);
         }
-        if (firstNameHArr.length > 1){
+        if (firstNameHArr.length > 1) {
             nameBetweenSpace = (fromMaxFirstNameH - firstNameH) / (firstNameHArr.length - 1);
         }
         //console.log(nameBetweenSpace)
         firstNameH = 0;
-        for (j=0; j<firstNameArray.length; j++){
+        for (j = 0; j < firstNameArray.length; j++) {
             fromNameTextY = 0;
-            if(firstNameHArr.length == 1){
-                fromNameTextY = fromNameY + fromLastNameH + fromNameSpace - 5 + (fromMaxFirstNameH / 2) - (getHeight(firstNameArray[j], addrFontFamily, fromNameFontSize) / 2);
-            } else if (firstNameHArr.length == 2 && j == 1){
-                fromNameTextY = fromNameY + fromLastNameH + fromNameSpace - 5 + fromMaxFirstNameH - getHeight(firstNameArray[j], addrFontFamily, fromNameFontSize);
+            if (firstNameHArr.length == 1) {
+                fromNameTextY =
+                    fromNameY +
+                    fromLastNameH +
+                    fromNameSpace -
+                    5 +
+                    fromMaxFirstNameH / 2 -
+                    getHeight(firstNameArray[j], addrFontFamily, fromNameFontSize) / 2;
+            } else if (firstNameHArr.length == 2 && j == 1) {
+                fromNameTextY =
+                    fromNameY +
+                    fromLastNameH +
+                    fromNameSpace -
+                    5 +
+                    fromMaxFirstNameH -
+                    getHeight(firstNameArray[j], addrFontFamily, fromNameFontSize);
             } else {
-                fromNameTextY = fromNameY + fromLastNameH + firstNameH + fromNameSpace - 5 
+                fromNameTextY = fromNameY + fromLastNameH + firstNameH + fromNameSpace - 5;
             }
 
             context.font = `${fromNameFontSize}px ${addrFontFamily}`;
-            context.fillText(
-                firstNameArray[j],
-                fromNameTextBaseLine[i],
-                fromNameTextY
-            );
-            
-            firstNameH += getHeight(firstNameArray[j], addrFontFamily, fromNameFontSize) + nameBetweenSpace;
+            context.fillText(firstNameArray[j], fromNameTextBaseLine[i], fromNameTextY);
+
+            firstNameH +=
+                getHeight(firstNameArray[j], addrFontFamily, fromNameFontSize) + nameBetweenSpace;
         }
     }
-    
-    if(inputFromPostCode)           window.localStorage.setItem('fromPostCode',inputFromPostCode);
-    if(inputFromAddr)               window.localStorage.setItem('fromAddr',inputFromAddr);
-    if(inputFromLastName)           window.localStorage.setItem('fromLastName',inputFromLastName);
-    if(fromFirstNamesValueArray)    window.localStorage.setItem('fromFirstNames',fromFirstNamesValueArray);
 
-    if(canvas){
+    if (inputFromPostCode) window.localStorage.setItem("fromPostCode", inputFromPostCode);
+    if (inputFromAddr) window.localStorage.setItem("fromAddr", inputFromAddr);
+    if (inputFromLastName) window.localStorage.setItem("fromLastName", inputFromLastName);
+    if (fromFirstNamesValueArray)
+        window.localStorage.setItem("fromFirstNames", fromFirstNamesValueArray);
+
+    if (canvas) {
         /*
         canvas.toBlob(function(result) {
             console.log(result);
@@ -540,28 +616,28 @@ function updateData(canvasId) {
         });
         */
         png = canvas.toDataURL();
-        console.log("-----")
-        console.log(png)
+        console.log("-----");
+        console.log(png);
         document.getElementById("atenaOutputImg").src = png;
     }
 }
 
-
 var trigger = document.querySelectorAll(".dataInputs");
-trigger.forEach(function(target) {
+trigger.forEach(function (target) {
     const updateImageId = target.getAttribute("updateImageId");
-    console.log(updateImageId)
-    const ua = navigator.userAgent
-    const isSPPad = ua.indexOf("iPhone") >= 0
-    || ua.indexOf("iPad") >= 0
-    || navigator.userAgent.indexOf("iPod") >= 0
-    || navigator.userAgent.indexOf("Android") >= 0
-    if (!isSPPad){
-        target.addEventListener('onchange', function(){
+    console.log(updateImageId);
+    const ua = navigator.userAgent;
+    const isSPPad =
+        ua.indexOf("iPhone") >= 0 ||
+        ua.indexOf("iPad") >= 0 ||
+        navigator.userAgent.indexOf("iPod") >= 0 ||
+        navigator.userAgent.indexOf("Android") >= 0;
+    if (!isSPPad) {
+        target.addEventListener("onchange", function () {
             console.log("onchange");
             updateData(updateImageId);
         });
-        target.addEventListener('focusout', function(){
+        target.addEventListener("focusout", function () {
             console.log("focusout");
             updateData(updateImageId);
         });
