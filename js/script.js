@@ -28,6 +28,7 @@ window.onload = function () {
 const postcardH = 1480;
 const postcardW = 1000;
 const addrFontFamily = "HanSerifBold";
+const dashes = "-–−ー－";
 
 var testCanvas = document.getElementById("testCanvas");
 // ごあいさん提供コード
@@ -62,6 +63,14 @@ function canvas2img(canvasId) {
     document.getElementById("atenaOutputImg").src = png;
 }
 
+function rotateCanvas(_ctx, degree, x_offset, y_offset) {
+    // x_offset,y_offsetを中心にdegree度(度数法)回転させたキャンバスを返します
+    _ctx.translate(x_offset, y_offset);
+    _ctx.rotate((degree * Math.PI) / 180);
+    _ctx.translate(-x_offset, -y_offset);
+    return _ctx
+}
+
 // 画像生成
 function updateData(canvasId) {
     var canvas = document.getElementById(canvasId);
@@ -92,92 +101,84 @@ function updateData(canvasId) {
     writePostCode(postCode, 455, 176, 65, 55, 15);
 
     // 住所
-    let addrFontSize;
-    const addrTextH = 800;
-    const addrFontSizeList = [
-        53, 50, 47, 44, 41, 39, 36, 33, 30, 27, 24, 21, 19, 16, 13, 10, 7, 4, 1,
-    ];
-    const addr = document.getElementById("inputAddr").value;
-    let newLine = [0];
-    let addrH = 0;
-    for (h = 0; h < addrFontSizeList.length; h++) {
-        for (i = 0; i < addr.length; i++) {
-            const textH = getHeight(addr[i], addrFontFamily, addrFontSizeList[h]);
-            //console.log(textH);
-            addrH += textH;
-            //console.log(addrH)
-            if (addrH > addrTextH) {
-                newLine.push([i - 1]);
-                //console.log(newLine);
-                addrH = textH;
+    function writeAddr() {
+        let addrFontSize;
+        const addrTextH = 800;
+        const addrFontSizeList = [
+            53, 50, 47, 44, 41, 39, 36, 33, 30, 27, 24, 21, 19, 16, 13, 10, 7, 4, 1,
+        ];
+        const addr = document.getElementById("inputAddr").value;
+        let newLine = [0];
+        let addrH = 0;
+        for (h = 0; h < addrFontSizeList.length; h++) {
+            for (i = 0; i < addr.length; i++) {
+                const textH = getHeight(addr[i], addrFontFamily, addrFontSizeList[h]);
+                //console.log(textH);
+                addrH += textH;
+                //console.log(addrH)
+                if (addrH > addrTextH) {
+                    newLine.push([i - 1]);
+                    //console.log(newLine);
+                    addrH = textH;
+                }
             }
-        }
-        if (newLine.length < 3) {
-            addrFontSize = addrFontSizeList[h];
-            break;
-        } else {
-            addrH = 0;
-            newLine = [0];
-        }
-    }
-    //console.log(addrFontSize)
-    //console.log(newLine)
-    const addrArray = addr.split("");
-    let addrArrayDaraw = [];
-    for (i = 0; i < newLine.length; i++) {
-        addrArrayDaraw.push(addrArray.slice(newLine[i], newLine[i + 1]));
-    }
-    //console.log(addrArrayDaraw);
-
-    addrH = 280;
-    let addrWL = 1;
-
-    const addrStandardW = getWidth("あ", addrFontFamily, addrFontSize);
-    const addrStandardH = getHeight("あ", addrFontFamily, addrFontSize);
-
-    context.font = `${addrFontSize}px ${addrFontFamily}`;
-
-    for (let i = 0; i < addrArrayDaraw.length; i++) {
-        //console.log(addrArrayDaraw[i])
-        for (let j = 0; j < addrArrayDaraw[i].length; j++) {
-            context.save();
-            const outputTxt = addrArrayDaraw[i][j];
-            const outputTxtW = getWidth(addrArrayDaraw[i][j], addrFontFamily, addrFontSize);
-            const outputTxtH = getHeight(addrArrayDaraw[i][j], addrFontFamily, addrFontSize);
-
-            if (
-                addrArrayDaraw[i][j] == "-" ||
-                addrArrayDaraw[i][j] == "–" ||
-                addrArrayDaraw[i][j] == "−"
-            ) {
-                context.rotate(Math.PI / 2);
-                context.fillText(
-                    outputTxt,
-                    addrH - 5,
-                    -postcardW +
-                        (addrStandardW - 10) +
-                        (addrStandardW + 10) * addrWL -
-                        (addrStandardW - outputTxtW) / 2 +
-                        45
-                );
-                context.restore();
+            if (newLine.length < 3) {
+                addrFontSize = addrFontSizeList[h];
+                break;
             } else {
-                context.fillText(
-                    outputTxt,
-                    postcardW -
-                        (addrStandardW + 10) -
-                        (addrStandardW + 10) * addrWL +
-                        (addrStandardW - outputTxtW) / 2 -
-                        20,
-                    addrH + 20
-                );
+                addrH = 0;
+                newLine = [0];
             }
-
-            addrH += outputTxtH + 10;
         }
+        //console.log(addrFontSize)
+        //console.log(newLine)
+        const addrArray = addr.split("");
+        let addrArrayDaraw = [];
+        for (i = 0; i < newLine.length; i++) {
+            addrArrayDaraw.push(addrArray.slice(newLine[i], newLine[i + 1]));
+        }
+        //console.log(addrArrayDaraw);
+
         addrH = 280;
-        addrWL += 1;
+        let addrWL = 1;
+
+        const addrStandardW = getWidth("あ", addrFontFamily, addrFontSize);
+        const addrStandardH = getHeight("あ", addrFontFamily, addrFontSize);
+
+        context.font = `${addrFontSize}px ${addrFontFamily}`;
+
+        addrArrayDaraw.forEach((addrField) => {
+            addrField.forEach((outputTxt) => {
+                const outputTxtW = getWidth(outputTxt, addrFontFamily, addrFontSize);
+                const outputTxtH = getHeight(outputTxt, addrFontFamily, addrFontSize);
+
+                const textX =
+                    postcardW -
+                    (addrStandardW + 10) -
+                    (addrStandardW + 10) * addrWL +
+                    (addrStandardW - outputTxtW) / 2 -
+                    20;
+
+                if (dashes.includes(outputTxt)) {
+                    context.save();
+                    context = rotateCanvas(context, 270, textX, addrH+20);
+                    context.fillText(
+                        outputTxt,
+                        textX,
+                        addrH +20
+                    );
+                    context.restore();
+                } else {
+                    context.fillText(outputTxt, textX, addrH + 20);
+                }
+
+                addrH += outputTxtH + 10;
+            });
+            addrH = 280;
+            addrWL += 1;
+        });
     }
+    writeAddr();
 
     const lastName = document.getElementById("inputLastName").value; // 苗字
     const firstNames = document.getElementsByClassName("inputFirstNames"); // 名前
