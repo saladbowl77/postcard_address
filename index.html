@@ -62,6 +62,7 @@
         section#inputs div.input3data div.input3dataInput:last-child{width: 20%;}
 
         section#inputs input[type="radio"]{display: none;}
+        section#inputs #atenaWrap input[type="radio"]{display: inline;}
         section#inputs div#atenaWrap,
         section#inputs div#userDatas {
             display: none;
@@ -210,6 +211,19 @@
                             type="text"
                         >
                     </div>
+                </div>
+                <div class="input1data">
+                    <form id="dash">
+                    <p>ダッシュの指定</p>
+                    <label><input type="radio" id="dashes1" name="dashes" value="30FC" checked>
+                    ー(全角長音 U+30FC)</label>
+
+                    <label><input type="radio" id="dashes2" name="dashes" value="2212">
+                    −(全角マイナス U+2212)</label>
+
+                    <label><input type="radio" id="dashes3" name="dashes" value="2503">
+                    ―(罫線 U+2503)</label>
+                    </form>
                 </div>
                 <div id="spButton"></div>
                 <div id="outPutImgWrap">

@@ -29,7 +29,7 @@ const postcardH = 1480;
 const postcardW = 1000;
 const addrFontFamily = "HanSerifBold";
 const dashes = "-–−ー－";
-const DEBUG_MODE = false;
+const DEBUG_MODE = true;
 
 var testCanvas = document.getElementById("testCanvas");
 // ごあいさん提供コード
@@ -64,11 +64,6 @@ function rotateCanvas(_ctx, degree, x_offset, y_offset) {
     // x_offset,y_offsetを中心にdegree度(度数法)回転させたキャンバスを返します
     _ctx.translate(x_offset, y_offset);
     _ctx.rotate((degree * Math.PI) / 180);
-    if (DEBUG_MODE) {
-        _ctx.fillStyle = "red";
-        _ctx.fillRect(-1, -1, 2, 2);
-        _ctx.fillStyle = "black";
-    }
     _ctx.translate(-x_offset, -y_offset);
     return _ctx;
 }
@@ -87,6 +82,7 @@ function updateData(canvasId) {
 
         context.save();
         context.font = `${fontSize}px ${addrFontFamily}`;
+        context.textBaseline = "alphabetic";
         context.translate(x, y);
 
         const postCodeArr = postCode.split("");
@@ -109,7 +105,14 @@ function updateData(canvasId) {
         const addrFontSizeList = [
             53, 50, 47, 44, 41, 39, 36, 33, 30, 27, 24, 21, 19, 16, 13, 10, 7, 4, 1,
         ];
-        const addr = document.getElementById("inputAddr").value;
+
+        const addr_raw = document.getElementById("inputAddr").value;
+        const dash = document.getElementById("dash").elements["dashes"].value;
+        console.log(dash);
+
+        const dash_regex = /[\u{30FC}\u{2010}-\u{2015}\u{2212}\u{FF70}-]/gu;
+        const addr = addr_raw.replace(dash_regex, String.fromCharCode(parseInt(dash, 16)));
+
         let newLine = [0];
         let addrH = 0;
         for (h = 0; h < addrFontSizeList.length; h++) {
@@ -148,7 +151,7 @@ function updateData(canvasId) {
         const addrStandardH = getHeight("あ", addrFontFamily, addrFontSize);
 
         context.font = `${addrFontSize}px ${addrFontFamily}`;
-        context.textBaseline = "top";
+        context.textBaseline = "middle";
 
         addrArrayDaraw.forEach((addrField) => {
             addrField.forEach((outputTxt) => {
@@ -162,7 +165,7 @@ function updateData(canvasId) {
                         (addrStandardW + 10) * addrWL +
                         (addrStandardW - outputTxtW) / 2 -
                         20;
-                    const textY = addrH + 20;
+                    const textY = addrH + outputTxtW / 2;
 
                     const rotateCenterX =
                         postcardW -
@@ -172,17 +175,20 @@ function updateData(canvasId) {
                         outputTxtW / 2 -
                         20;
 
-                    const rotateCenterY = addrH + 20;
+                    const rotateCenterY = addrH + outputTxtW / 2;
 
                     context.save();
-                    context = rotateCanvas(context, 270, rotateCenterX, rotateCenterY);
+                    context = rotateCanvas(context, 90, rotateCenterX, rotateCenterY);
                     context.fillText(outputTxt, textX, textY);
-
                     context.restore();
-                    context.fillText(outputTxt, textX, textY);
+                    //context.fillText(outputTxt, textX, textY);
+
                     if (DEBUG_MODE) {
+                        context.save();
                         context.fillStyle = "blue";
                         context.fillRect(textX, textY, 2, 2);
+                        context.fillStyle = "red";
+                        context.fillRect(rotateCenterX, rotateCenterY, 1, 1);
                         context.restore();
                     }
 
