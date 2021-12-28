@@ -581,7 +581,7 @@ function updateData(canvasId) {
     }
 
     if (inputFromPostCode) window.localStorage.setItem("fromPostCode", inputFromPostCode);
-    if (inputFromAddr) window.localStorage.setItem("fromAddr", inputFromAddr);
+    if (inputFromAddr) window.localStorage.setItem("fromAddr", inputFromAddr_raw);
     if (inputFromLastName) window.localStorage.setItem("fromLastName", inputFromLastName);
     if (fromFirstNamesValueArray)
         window.localStorage.setItem("fromFirstNames", fromFirstNamesValueArray);
