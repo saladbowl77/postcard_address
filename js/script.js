@@ -68,6 +68,20 @@ function rotateCanvas(_ctx, degree, x_offset, y_offset) {
     return _ctx;
 }
 
+function formatAddr(address, dash_type) {
+    const dash_regex = /[-–−－]/g;
+    const addr = address.replace(dash_regex, dash_type);
+
+    const numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    const kansuji = ["〇", "一", "二", "三", "四", "五", "六", "七", "八", "九"];
+
+    return numbers.reduce((a, c, i) => {
+        const reg = new RegExp(numbers[i], "gm");
+        c = a.replace(reg, kansuji[i]);
+        return c;
+    }, addr);
+}
+
 // 画像生成
 function updateData(canvasId) {
     var canvas = document.getElementById(canvasId);
@@ -106,11 +120,11 @@ function updateData(canvasId) {
     ];
 
     const addr_raw = document.getElementById("inputAddr").value;
-    const dash = document.getElementById("dash").elements["dashes"].value;
-    console.log(dash);
+    const dash = String.fromCharCode(
+        parseInt(document.getElementById("dash").elements["dashes"].value, 16)
+    );
 
-    const dash_regex = /[-–−－]/g;
-    const addr = addr_raw.replace(dash_regex, String.fromCharCode(parseInt(dash, 16)));
+    const addr = formatAddr(addr_raw, dash);
 
     let newLine = [0];
     let addrH = 0;
@@ -216,8 +230,12 @@ function updateData(canvasId) {
         });
     }
     writeVertical(addrArrayDaraw, addrFontFamily, addrFontSize, postcardW - 20, 280, 10, 10);
+
     //送信者住所を描画
-    const inputFromAddr = document.getElementById("inputFromAddr").value;
+    const inputFromAddr_raw = document.getElementById("inputFromAddr").value;
+
+    const inputFromAddr = formatAddr(inputFromAddr_raw, dash);
+
     let fromAddrFontSize;
     let fromAddrH = 0;
     const fromAddrTextH = 500;
@@ -435,7 +453,7 @@ function updateData(canvasId) {
     const inputFromPostCode = document.getElementById("inputFromPostCode").value;
     writePostCode(inputFromPostCode, 62, 1280, 40, 40, 13);
 
-    // 送信者 住所
+    // 送信者名前
 
     const inputFromLastName = document.getElementById("inputFromLastName").value; // 苗字
     const inputFromFirstNames = document.getElementsByClassName("inputFromFirstNames"); // 名前
