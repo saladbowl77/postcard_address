@@ -47,7 +47,7 @@ function getHeight(target_letters, font_family, font_size) {
         return (
             metrics.actualBoundingBoxAscent +
             metrics.actualBoundingBoxDescent +
-            (font_size / 10) * 7
+            (font_size / 10) * 4
         );
     } else {
         return metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
