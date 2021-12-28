@@ -617,3 +617,9 @@ trigger.forEach(function (target) {
         });
     }
 });
+
+const dash_form = document.getElementById("dash");
+dash_form.addEventListener("change", () => {
+    const updateImageId = dash_form.getAttribute("updateImageId");
+    updateData(updateImageId);
+});
