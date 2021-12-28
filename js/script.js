@@ -5,7 +5,6 @@ window.onload = function () {
         ua.indexOf("iPad") >= 0 ||
         navigator.userAgent.indexOf("iPod") >= 0 ||
         navigator.userAgent.indexOf("Android") >= 0;
-    console.log(isSPPad);
     if (isSPPad)
         document.getElementById(
             "spButton"
@@ -85,7 +84,6 @@ function formatAddr(address, dash_type) {
 // 画像生成
 function updateData(canvasId) {
     var canvas = document.getElementById(canvasId);
-    //console.log(canvas)
     //background.src = "./backImage_sita.jpg";
     //background.src = "./backImage.jpg";
     let context = canvas.getContext("2d");
@@ -131,12 +129,9 @@ function updateData(canvasId) {
     for (h = 0; h < addrFontSizeList.length; h++) {
         for (i = 0; i < addr.length; i++) {
             const textH = getHeight(addr[i], addrFontFamily, addrFontSizeList[h]);
-            //console.log(textH);
             addrH += textH;
-            //console.log(addrH)
             if (addrH > addrTextH) {
                 newLine.push([i - 1]);
-                //console.log(newLine);
                 addrH = textH;
             }
         }
@@ -148,14 +143,11 @@ function updateData(canvasId) {
             newLine = [0];
         }
     }
-    //console.log(addrFontSize)
-    //console.log(newLine)
     const addrArray = addr.split("");
     let addrArrayDaraw = [];
     for (i = 0; i < newLine.length; i++) {
         addrArrayDaraw.push(addrArray.slice(newLine[i], newLine[i + 1]));
     }
-    //console.log(addrArrayDaraw);
 
     function writeVertical(lines, fontFamily, fontSize, x, y, lineSpacingX, lineSpacingY) {
         let addrH = y;
@@ -196,7 +188,6 @@ function updateData(canvasId) {
                     context.scale(1, -1); //左右反転
                     context.fillText(outputTxt, textX, -textY);
                     context.restore();
-                    //context.fillText(outputTxt, textX, textY);
 
                     if (DEBUG_MODE) {
                         context.save();
@@ -244,15 +235,11 @@ function updateData(canvasId) {
     for (h = 0; h < fromAddrFontSizeList.length; h++) {
         for (i = 0; i < inputFromAddr.length; i++) {
             const textH = getHeight(inputFromAddr[i], addrFontFamily, fromAddrFontSizeList[h]);
-            //console.log(textH);
             fromAddrH += textH;
-            //console.log(fromAddrH)
             if (fromAddrH > fromAddrTextH) {
                 fromAddrNewLine.push([i - 1]);
-                //console.log(fromAddrNewLine);
                 fromAddrH = textH;
             }
-            //console.log(fromAddrNewLine);
         }
         if (fromAddrNewLine.length < 3) {
             fromAddrFontSize = fromAddrFontSizeList[h];
@@ -263,13 +250,11 @@ function updateData(canvasId) {
         }
     }
 
-    //console.log(fromAddrFontSize)
     const fromAddrArray = inputFromAddr.split("");
     let fromAddrArrayDaraw = [];
     for (i = 0; i < fromAddrNewLine.length; i++) {
         fromAddrArrayDaraw.push(fromAddrArray.slice(fromAddrNewLine[i], fromAddrNewLine[i + 1]));
     }
-    //console.log(fromAddrArrayDaraw);
     writeVertical(fromAddrArrayDaraw, addrFontFamily, fromAddrFontSize, 370, 650, 10, 4);
 
     const lastName = document.getElementById("inputLastName").value; // 苗字
@@ -305,11 +290,9 @@ function updateData(canvasId) {
         nameTextW = 0;
         nameTextH = 0;
         nameFontSize = fontSizeArray[i];
-        //console.log(nameFontSize);
         for (j = 0; j < allNameText.length; j++) {
             nameTextW += getWidth(allNameText[j], addrFontFamily, nameFontSize) + 20;
             nameTextH += getHeight(allNameText[j], addrFontFamily, nameFontSize) + 10;
-            //console.log(getHeight(allNameText[j], addrFontFamily, nameFontSize))
         }
         if (nameTextH < nameMaxHSize && nameTextW < nameMaxWSize) break;
     }
@@ -321,7 +304,6 @@ function updateData(canvasId) {
         for (i = 0; i < maxFirstNameArray.length; i++) {
             maxFirstNameH += getHeight(maxFirstNameArray[i], addrFontFamily, nameFontSize) + 20;
         }
-        //console.log(firstNameCount)
         if (firstNameCount == 1) {
             nameTextBaseLine.push(
                 postcardW / 2 +
@@ -376,8 +358,6 @@ function updateData(canvasId) {
         }
     }
 
-    //console.log(nameTextBaseLine);
-
     const lastNameArray = lastName.split("");
     let lastNameH = 0;
     for (i = 0; i < lastNameArray.length; i++) {
@@ -402,7 +382,6 @@ function updateData(canvasId) {
         if (firstNameHArr.length > 1) {
             nameBetweenSpace = (maxFirstNameH - firstNameH) / (firstNameHArr.length - 1);
         }
-        //console.log(nameBetweenSpace)
         firstNameH = 0;
         for (j = 0; j < firstNameArray.length; j++) {
             nameTextY = 0;
@@ -486,7 +465,6 @@ function updateData(canvasId) {
         fromNameTextW = 0;
         fromNameTextH = 0;
         fromNameFontSize = fromFontSizeArray[i];
-        //console.log(fromNameFontSize);
         for (j = 0; j < fromAllNameText.length; j++) {
             fromNameTextW += getWidth(fromAllNameText[j], addrFontFamily, fromNameFontSize) + 2;
             fromNameTextH += getHeight(fromAllNameText[j], addrFontFamily, fromNameFontSize) + 2;
@@ -502,7 +480,6 @@ function updateData(canvasId) {
             fromMaxFirstNameH +=
                 getHeight(fromMaxFirstNameArray[i], addrFontFamily, fromNameFontSize) + 20;
         }
-        //console.log(fromFirstNameCount)
         if (fromFirstNameCount == 1) {
             fromNameTextBaseLine.push(
                 120 - getWidth(fromMaxFirstNameArray[0], addrFontFamily, fromNameFontSize) / 2
@@ -547,8 +524,6 @@ function updateData(canvasId) {
         }
     }
 
-    //console.log(fromNameTextBaseLine);
-
     const fromLastNameArray = inputFromLastName.split("");
     const fromNameY = 700;
     let fromLastNameH = 0;
@@ -574,7 +549,6 @@ function updateData(canvasId) {
         if (firstNameHArr.length > 1) {
             nameBetweenSpace = (fromMaxFirstNameH - firstNameH) / (firstNameHArr.length - 1);
         }
-        //console.log(nameBetweenSpace)
         firstNameH = 0;
         for (j = 0; j < firstNameArray.length; j++) {
             fromNameTextY = 0;
@@ -621,8 +595,6 @@ function updateData(canvasId) {
         });
         */
         png = canvas.toDataURL();
-        console.log("-----");
-        console.log(png);
         document.getElementById("atenaOutputImg").src = png;
     }
 }
@@ -630,7 +602,6 @@ function updateData(canvasId) {
 var trigger = document.querySelectorAll(".dataInputs");
 trigger.forEach(function (target) {
     const updateImageId = target.getAttribute("updateImageId");
-    console.log(updateImageId);
     const ua = navigator.userAgent;
     const isSPPad =
         ua.indexOf("iPhone") >= 0 ||
@@ -639,11 +610,9 @@ trigger.forEach(function (target) {
         navigator.userAgent.indexOf("Android") >= 0;
     if (!isSPPad) {
         target.addEventListener("onchange", function () {
-            console.log("onchange");
             updateData(updateImageId);
         });
         target.addEventListener("focusout", function () {
-            console.log("focusout");
             updateData(updateImageId);
         });
     }
