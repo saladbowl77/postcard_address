@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>はがき宛名生成サイト - ライセンス</title>
+    <link rel="stylesheet" href="../css/headerstyle.css">
+
+    <style>
+        html {font-family: "Noto Sans JP","ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro","メイリオ",Meiryo,"MS Pゴシック",sans-serif;}
+        h2,h3,h4,section,div,p,a{margin: 0;padding: 0;}
+        div.fontsWrapButton {margin: 10px 0;}
+        div.fontsWrap input[type="checkbox"]{display: none;}
+        div.fontsWrap label span.qIcon {background-color: #121212;}
+        div.fontsWrap label {
+            display: block;
+            width: calc(100% - 20px);
+            background-color: #fefefe;
+            padding: 10px;   border-radius: 10px;
+            font-size: 1.1rem;
+        }
+        div.answer {
+            position: relative;
+            width: calc(100% - 50px); height: 0; padding: 0 0 0px 45px;
+            transition: ease .3s;
+            overflow: hidden;
+            opacity: 0;
+        }
+        div.answer p {padding: 0px 0;}
+        div.fontsWrap input[type="checkbox"]:checked ~ div.answer {
+            height: max-content;
+            width: calc(100% - 50px);
+            padding: 0 5px 10px 45px;
+            transition: ease .3s;
+            opacity: 1;
+        }
+        div.fontsWrap input[type="checkbox"]:checked ~ div.answer p {padding: 5px 0;}
+    </style>
+</head>
+<body>
+    <header>
+        <label for="headerMenuOpen">
+            <span></span>
+            <span></span>
+            <span></span>
+        </label>
+        <h1>
+            <span>年賀状</span><!--
+        --><span>宛名</span><!--
+        --><span>ジェネレーター</span>
+        </h1>
+        <div id="headerSideMenu">
+            <a href="/">トップ</a>
+            <a href="/how">使い方</a>
+            <a href="/license">ライセンス</a>
+            <a href="https://terms.saladbowl.work" target="_blank" rel="noopener noreferrer">利用規約</a>
+        </div>
+    </header>
+    <input type="checkbox" id="headerMenuOpen">
+    <div id="headerSideMenuSp">
+        <a href="/">トップ</a>
+        <a href="/how">使い方</a>
+        <a href="/license">ライセンス</a>
+        <a href="https://terms.saladbowl.work" target="_blank" rel="noopener noreferrer">利用規約</a>
+    </div>
+    <main>
+        <h2>ライセンス</h2>
+        <p>本ページでは使用しているフォントのクレジットを表記しています</p>
+        <section id="fonts">
+            <div id="fontsWrap" class="fontsWrap"></div>
+        </section>
+    </main>
+    <footer></footer>
+
+    <script>
+        const fontsArr = [
+            [
+                "源ノ明朝",
+                `<a href="https://source.typekit.com/source-han-serif/jp">源ノ明朝</a>はAdobeによる65,535字に対応した書体です。
+                ライセンス(SIL Open Font License)全文は以下の通りです。
+
+
+                This Font Software is licensed under the SIL Open Font License,
+                Version 1.1.
+
+                This license is copied below, and is also available with a FAQ at:
+                http://scripts.sil.org/OFL
+
+                -----------------------------------------------------------
+                SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+                -----------------------------------------------------------
+
+                PREAMBLE
+                The goals of the Open Font License (OFL) are to stimulate worldwide
+                development of collaborative font projects, to support the font
+                creation efforts of academic and linguistic communities, and to
+                provide a free and open framework in which fonts may be shared and
+                improved in partnership with others.
+
+                The OFL allows the licensed fonts to be used, studied, modified and
+                redistributed freely as long as they are not sold by themselves. The
+                fonts, including any derivative works, can be bundled, embedded,
+                redistributed and/or sold with any software provided that any reserved
+                names are not used by derivative works. The fonts and derivatives,
+                however, cannot be released under any other type of license. The
+                requirement for fonts to remain under this license does not apply to
+                any document created using the fonts or their derivatives.
+
+                DEFINITIONS
+                "Font Software" refers to the set of files released by the Copyright
+                Holder(s) under this license and clearly marked as such. This may
+                include source files, build scripts and documentation.
+
+                "Reserved Font Name" refers to any names specified as such after the
+                copyright statement(s).
+
+                "Original Version" refers to the collection of Font Software
+                components as distributed by the Copyright Holder(s).
+
+                "Modified Version" refers to any derivative made by adding to,
+                deleting, or substituting -- in part or in whole -- any of the
+                components of the Original Version, by changing formats or by porting
+                the Font Software to a new environment.
+
+                "Author" refers to any designer, engineer, programmer, technical
+                writer or other person who contributed to the Font Software.
+
+                PERMISSION & CONDITIONS
+                Permission is hereby granted, free of charge, to any person obtaining
+                a copy of the Font Software, to use, study, copy, merge, embed,
+                modify, redistribute, and sell modified and unmodified copies of the
+                Font Software, subject to the following conditions:
+
+                1) Neither the Font Software nor any of its individual components, in
+                Original or Modified Versions, may be sold by itself.
+
+                2) Original or Modified Versions of the Font Software may be bundled,
+                redistributed and/or sold with any software, provided that each copy
+                contains the above copyright notice and this license. These can be
+                included either as stand-alone text files, human-readable headers or
+                in the appropriate machine-readable metadata fields within text or
+                binary files as long as those fields can be easily viewed by the user.
+
+                3) No Modified Version of the Font Software may use the Reserved Font
+                Name(s) unless explicit written permission is granted by the
+                corresponding Copyright Holder. This restriction only applies to the
+                primary font name as presented to the users.
+
+                4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font
+                Software shall not be used to promote, endorse or advertise any
+                Modified Version, except to acknowledge the contribution(s) of the
+                Copyright Holder(s) and the Author(s) or with their explicit written
+                permission.
+
+                5) The Font Software, modified or unmodified, in part or in whole,
+                must be distributed entirely under this license, and must not be
+                distributed under any other license. The requirement for fonts to
+                remain under this license does not apply to any document created using
+                the Font Software.
+
+                TERMINATION
+                This license becomes null and void if any of the above conditions are
+                not met.
+
+                DISCLAIMER
+                THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+                EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+                MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+                OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE
+                COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+                INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+                DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+                FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+                OTHER DEALINGS IN THE FONT SOFTWARE.
+                `
+            ],
+        ]
+        let fontsWrap = document.getElementById("fontsWrap");
+        fontsArr.forEach((item, i) => {
+            fontsWrap.insertAdjacentHTML('beforeend', `<div class="fontsWrapButton"><input type="checkbox" id="q${i}">
+            <label for="q${i}">${item[0]}</label>
+            <div class="answer">
+                <p>${item[1].replace(/\n/g, '<br>')}</p>
+                
+                
+            </div></div>`);
+        });
+    </script>
+</body>
+</html>
